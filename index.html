@@ -1,0 +1,1415 @@
+<html lang="ru"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Family</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --p:#5C5CE8;--p-dim:rgba(92,92,232,.13);--p-dark:#4545C0;
+  --red:#FF4757;--red-dim:rgba(255,71,87,.12);
+  --green:#1DB976;--green-dim:rgba(29,185,118,.12);
+  --orange:#FF7A00;--orange-dim:rgba(255,122,0,.12);
+  --bg:#F0F0F8;--card:#FFFFFF;--card2:#F7F7FC;
+  --text:#1A1A2E;--text2:#6B6B88;--text3:#B0B0C8;
+  --border:rgba(0,0,0,.07);
+  --sh:0 2px 12px rgba(0,0,0,.07),0 0 0 .5px rgba(0,0,0,.04);
+  --sh-sm:0 1px 4px rgba(0,0,0,.06);
+  --r:16px;--r-sm:10px;--r-btn:14px;
+}
+body{background:#12121E;display:flex;justify-content:center;align-items:center;min-height:100vh;
+  font-family:-apple-system,'Helvetica Neue',sans-serif;-webkit-font-smoothing:antialiased}
+#app{width:390px;height:844px;background:var(--bg);position:relative;overflow:hidden;
+  border-radius:52px;box-shadow:0 0 0 10px #1E1E2E,0 0 0 11px #2A2A3E,0 40px 80px rgba(0,0,0,.7)}
+
+.screen{position:absolute;inset:0;display:none;flex-direction:column;background:var(--bg)}
+.screen.active{display:flex}
+
+.sb{height:50px;background:var(--card);display:flex;align-items:flex-end;
+  justify-content:space-between;padding:0 24px 10px;flex-shrink:0}
+.sb .t{font-size:15px;font-weight:600;color:var(--text)}
+.sb-ic{display:flex;gap:6px;align-items:center;color:var(--text)}
+
+.nav{height:48px;background:var(--card);border-bottom:.5px solid var(--border);
+  display:flex;align-items:center;padding:0 16px;flex-shrink:0;position:relative;box-shadow:var(--sh-sm)}
+.nav-title{position:absolute;left:50%;transform:translateX(-50%);font-size:17px;
+  font-weight:700;color:var(--text);white-space:nowrap;pointer-events:none;letter-spacing:-.2px}
+.nb{background:none;border:none;color:var(--p);font-size:16px;cursor:pointer;
+  padding:4px 0;font-family:inherit;font-weight:500;z-index:1}
+.nb.fw{font-weight:700}
+.nb.r{margin-left:auto}
+.nb.red{color:var(--red)}
+
+.main-body{flex:1;position:relative;overflow:hidden;min-height:0}
+.tab-view{position:absolute;inset:0;display:none;flex-direction:column}
+.tab-view.active{display:flex;animation:fi .18s ease}
+@keyframes fi{from{opacity:.4;transform:scale(.985)}to{opacity:1;transform:scale(1)}}
+
+/* 5-TAB BAR */
+.tab-bar{height:84px;background:var(--card);border-top:.5px solid var(--border);
+  display:flex;padding:8px 0 0;flex-shrink:0;box-shadow:0 -4px 20px rgba(0,0,0,.05)}
+.ti{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;
+  transition:transform .14s ease}
+.ti:active{transform:scale(.88)}
+.ti-icon{width:22px;height:22px;color:var(--text3);transition:color .2s}
+.ti-label{font-size:9px;font-weight:500;color:var(--text3);transition:color .2s;letter-spacing:.1px}
+.ti-pip{width:4px;height:4px;border-radius:50%;background:var(--p);opacity:0;transition:opacity .2s;margin-bottom:1px}
+.ti.on .ti-icon{color:var(--p)}
+.ti.on .ti-label{color:var(--p);font-weight:700}
+.ti.on .ti-pip{opacity:1}
+
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:20px}
+
+.sec{margin:20px 16px 0}
+.sec-h{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;
+  letter-spacing:.6px;padding:0 4px;margin-bottom:8px}
+
+.card{background:var(--card);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.crow{display:flex;align-items:center;padding:13px 16px;border-bottom:.5px solid var(--border);
+  min-height:48px;cursor:pointer;gap:12px;transition:background .12s}
+.crow:last-child{border-bottom:none}
+.crow:active{background:var(--bg)}
+.crow.s{cursor:default}.crow.s:active{background:none}
+.cm{flex:1;min-width:0}
+.ct{font-size:16px;color:var(--text)}
+.cs{font-size:13px;color:var(--text2);margin-top:2px}
+.cv{font-size:15px;color:var(--text2);flex-shrink:0}
+.chev{width:7px;height:7px;border-right:1.5px solid var(--text3);
+  border-top:1.5px solid var(--text3);transform:rotate(45deg);flex-shrink:0}
+
+.igroup{background:var(--card);border-radius:var(--r);overflow:hidden;margin:0 16px;box-shadow:var(--sh)}
+.irow{display:flex;align-items:center;padding:0 16px;min-height:48px;border-bottom:.5px solid var(--border)}
+.irow:last-child{border-bottom:none}
+.ilabel{font-size:15px;color:var(--text);min-width:96px;flex-shrink:0;font-weight:500}
+.ifield{flex:1;border:none;outline:none;font-size:15px;color:var(--text);background:transparent;
+  text-align:right;font-family:inherit;min-width:0;user-select:text;-webkit-user-select:text}
+.ifield::placeholder{color:var(--text3)}
+.ifield.L{text-align:left}
+textarea.ifield{text-align:left;resize:none;padding:10px 0;line-height:1.5}
+select.ifield{-webkit-appearance:none;cursor:pointer;color:var(--text)}
+
+.btn{display:block;width:calc(100% - 32px);margin:0 16px;padding:15px;
+  border-radius:var(--r-btn);font-size:17px;font-weight:600;cursor:pointer;border:none;
+  font-family:inherit;text-align:center;letter-spacing:-.2px;
+  transition:transform .12s ease,opacity .12s ease}
+.btn:active{transform:scale(.97);opacity:.88}
+.btn-p{background:var(--p);color:#fff;box-shadow:0 4px 16px rgba(92,92,232,.35)}
+.btn-g{background:rgba(92,92,232,.1);color:var(--p)}
+.btn-red{background:var(--red);color:#fff;box-shadow:0 4px 16px rgba(255,71,87,.3)}
+.btn-ghost{background:transparent;color:var(--p);border:1.5px solid var(--p)}
+
+.seg{display:flex;background:rgba(0,0,0,.06);border-radius:10px;padding:3px;margin:0 16px}
+.seg-b{flex:1;padding:7px;text-align:center;font-size:13px;font-weight:500;color:var(--text2);
+  border-radius:8px;cursor:pointer;border:none;background:transparent;font-family:inherit;transition:all .18s}
+.seg-b.on{background:var(--card);color:var(--text);font-weight:600;
+  box-shadow:0 1px 6px rgba(0,0,0,.1),0 .5px 0 rgba(0,0,0,.05)}
+
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:700;color:#fff;flex-shrink:0;letter-spacing:-.5px}
+.pdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.ph{background:var(--red)}.pm{background:var(--orange)}.pl{background:var(--green)}
+
+.overlay{position:absolute;inset:0;background:rgba(10,10,30,.5);display:none;
+  align-items:flex-end;z-index:100;backdrop-filter:blur(2px)}
+.overlay.open{display:flex}
+.overlay.open .sheet{animation:su .38s cubic-bezier(.32,.72,0,1) forwards}
+@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sheet{background:var(--bg);border-radius:22px 22px 0 0;width:100%;max-height:93%;
+  display:flex;flex-direction:column;overflow:hidden;box-shadow:0 -8px 40px rgba(0,0,0,.2)}
+.sh{width:40px;height:5px;background:rgba(0,0,0,.15);border-radius:3px;margin:10px auto;flex-shrink:0}
+.sh-hd{display:flex;align-items:center;padding:0 16px 14px;flex-shrink:0}
+.sh-title{font-size:17px;font-weight:700;flex:1;text-align:center;color:var(--text)}
+.sh-body{overflow-y:auto;padding-bottom:34px}
+
+/* CHAT */
+.chat-msgs{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.mwrap{display:flex;flex-direction:column}
+.mwrap.mine{align-items:flex-end}
+.minner{display:flex;gap:8px;align-items:flex-end;max-width:84%}
+.mwrap.mine .minner{flex-direction:row-reverse}
+.mbubble{background:var(--card);border-radius:18px 18px 18px 4px;padding:9px 13px;
+  font-size:16px;line-height:1.45;word-break:break-word;max-width:260px;box-shadow:var(--sh-sm)}
+.mwrap.mine .mbubble{background:var(--p);color:#fff;border-radius:18px 18px 4px 18px;
+  box-shadow:0 2px 8px rgba(92,92,232,.3)}
+.mname{font-size:12px;color:var(--text2);font-weight:600;margin-bottom:3px;padding:0 4px}
+.mtime{font-size:11px;color:var(--text3);margin-top:3px;padding:0 4px}
+.chat-in-area{background:var(--card);border-top:.5px solid var(--border);
+  padding:8px 10px;display:flex;align-items:flex-end;gap:6px;flex-shrink:0}
+.chat-in{flex:1;border:none;outline:none;font-size:16px;font-family:inherit;
+  resize:none;max-height:100px;min-height:38px;background:var(--bg);
+  border-radius:20px;padding:9px 15px;line-height:1.35;user-select:text;
+  -webkit-user-select:text;color:var(--text)}
+.chat-in::placeholder{color:var(--text3)}
+.send-btn{width:36px;height:36px;background:var(--p);border:none;border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(92,92,232,.4);transition:transform .12s}
+.send-btn:active{transform:scale(.88)}
+.icon-btn{width:34px;height:34px;background:none;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  border-radius:50%;transition:background .12s;color:var(--text2)}
+.icon-btn:active{background:var(--bg)}
+
+/* POLL MESSAGE */
+.poll-card{background:var(--card);border-radius:14px;padding:12px;box-shadow:var(--sh-sm);max-width:280px}
+.mwrap.mine .poll-card{background:rgba(255,255,255,.15);backdrop-filter:blur(4px)}
+.poll-q{font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.3}
+.mwrap.mine .poll-q{color:#fff}
+.poll-opt{position:relative;padding:9px 12px;border-radius:10px;background:var(--bg);
+  margin-bottom:6px;cursor:pointer;overflow:hidden;transition:background .12s;border:none;
+  width:100%;font-family:inherit;text-align:left}
+.poll-opt:active{opacity:.85}
+.poll-bar{position:absolute;left:0;top:0;bottom:0;background:var(--p-dim);border-radius:10px;
+  transition:width .4s cubic-bezier(.4,0,.2,1);pointer-events:none}
+.poll-opt.voted .poll-bar{background:rgba(92,92,232,.2)}
+.poll-opt-text{position:relative;z-index:1;display:flex;justify-content:space-between;
+  align-items:center;gap:8px}
+.poll-opt-label{font-size:14px;font-weight:500;color:var(--text)}
+.poll-opt-pct{font-size:13px;font-weight:700;color:var(--p)}
+.poll-footer{font-size:12px;color:var(--text3);margin-top:6px}
+
+/* CALENDAR */
+.cal-wrap{padding:16px 16px 0}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-month{font-size:17px;font-weight:700;color:var(--text)}
+.cal-nav-btn{width:32px;height:32px;border-radius:50%;background:var(--card);border:none;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--sh-sm);transition:transform .12s;color:var(--text)}
+.cal-nav-btn:active{transform:scale(.88)}
+.cal-wdays{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px}
+.cal-wd{text-align:center;font-size:11px;font-weight:600;color:var(--text3);padding:4px 0}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-cell{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;border-radius:50%;cursor:pointer;position:relative;
+  font-size:14px;color:var(--text);font-weight:400;transition:background .12s}
+.cal-cell:active{background:var(--p-dim)}
+.cal-cell.today{background:var(--p);color:#fff;font-weight:700}
+.cal-cell.sel:not(.today){background:var(--p-dim);color:var(--p);font-weight:600}
+.cal-cell.other{color:var(--text3)}
+.cal-dots{display:flex;gap:2px;position:absolute;bottom:3px}
+.cal-dot{width:4px;height:4px;border-radius:50%}
+.cal-dot.ev{background:var(--p)}
+.cal-dot.task{background:var(--orange)}
+.cal-day-events{margin-top:16px}
+.cal-fab{position:absolute;right:16px;bottom:16px;width:48px;height:48px;
+  background:var(--p);border:none;border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 16px rgba(92,92,232,.45);transition:transform .12s;z-index:10;color:#fff}
+.cal-fab:active{transform:scale(.9)}
+
+/* EVENTS */
+.ev-card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);
+  margin:0 0 10px;overflow:hidden}
+.ev-header{padding:14px 16px 10px;border-bottom:.5px solid var(--border)}
+.ev-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
+.ev-meta{font-size:13px;color:var(--text2);display:flex;gap:12px;flex-wrap:wrap}
+.ev-going{padding:10px 16px;display:flex;gap:-4px;align-items:center}
+.ev-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;
+  font-size:12px;font-weight:600}
+.ev-pill.go{background:var(--green-dim);color:var(--green)}
+.ev-pill.no{background:var(--red-dim);color:var(--red)}
+.ev-pill.wait{background:var(--p-dim);color:var(--p)}
+
+/* PARTICIPANT STATUS */
+.p-status{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:12px;flex-shrink:0}
+.ps-go{background:var(--green-dim)}
+.ps-no{background:var(--red-dim)}
+.ps-wait{background:rgba(0,0,0,.06)}
+
+/* EMPTY */
+.empty{display:flex;flex-direction:column;align-items:center;padding:50px 32px;
+  gap:10px;text-align:center}
+.empty-t{font-size:20px;font-weight:700;color:var(--text);letter-spacing:-.3px}
+.empty-s{font-size:15px;color:var(--text2);line-height:1.5}
+
+/* MISC */
+.inv-code{font-size:42px;font-weight:800;letter-spacing:12px;text-align:center;
+  color:var(--p);padding:28px;font-variant-numeric:tabular-nums}
+.toast{position:absolute;bottom:102px;left:50%;transform:translateX(-50%);
+  background:rgba(26,26,46,.9);color:#fff;padding:10px 22px;border-radius:22px;
+  font-size:14px;font-weight:500;white-space:nowrap;z-index:999;
+  opacity:0;transition:opacity .22s;pointer-events:none;backdrop-filter:blur(8px)}
+.toast.on{opacity:1}
+.dl-ok{color:var(--text3)}.dl-near{color:var(--orange)}.dl-ov{color:var(--red)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:10px 0}
+.chip{background:rgba(0,0,0,.06);color:var(--text);border-radius:20px;
+  padding:6px 14px;font-size:14px;cursor:pointer;border:none;font-family:inherit;
+  transition:all .15s;font-weight:500}
+.chip.on{background:var(--p);color:#fff;box-shadow:0 2px 8px rgba(92,92,232,.3)}
+.rbadge{font-size:11px;color:var(--p);background:var(--p-dim);
+  padding:2px 8px;border-radius:20px;font-weight:600;flex-shrink:0}
+.bday-tag{display:inline-flex;align-items:center;gap:4px;background:var(--orange-dim);
+  color:var(--orange);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600}
+.act-info{text-align:center;padding:18px 32px;font-size:15px;font-weight:500;line-height:1.4}
+.pav{border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:800;color:#fff;margin:0 auto;letter-spacing:-.5px}
+#screen-auth{background:var(--card)}
+.auth-top{padding:64px 32px 36px;text-align:center}
+.auth-icon{width:90px;height:90px;border-radius:26px;margin:0 auto 22px;
+  display:flex;align-items:center;justify-content:center;
+  background:#fff;
+  box-shadow:0 8px 30px rgba(92,92,232,.18),0 0 0 1px rgba(0,0,0,.04)}
+.auth-h1{font-size:32px;font-weight:800;letter-spacing:-.8px;color:var(--text)}
+.auth-sub{font-size:15px;color:var(--text2);margin-top:6px}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- AUTH -->
+<div id="screen-auth" class="screen">
+  <div class="content" style="background:var(--card)">
+    <div class="auth-top">
+      <div class="auth-icon">
+        <svg width="62" height="62" viewBox="0 0 62 62" fill="none">
+          <defs>
+            <linearGradient id="lgl" x1="14" y1="4" x2="26" y2="52" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#9B91F5"></stop>
+              <stop offset="100%" stop-color="#5C5CE8"></stop>
+            </linearGradient>
+            <linearGradient id="lgr" x1="48" y1="4" x2="36" y2="52" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#2DDFD4"></stop>
+              <stop offset="100%" stop-color="#0CBAAD"></stop>
+            </linearGradient>
+          </defs>
+          <!-- left figure -->
+          <circle cx="21" cy="11" r="8" fill="url(#lgl)"></circle>
+          <path d="M21 19 C4 24 1 40 17 50 L31 58 L31 37 C31 27 28 20 21 19 Z" fill="url(#lgl)"></path>
+          <!-- right figure -->
+          <circle cx="41" cy="11" r="8" fill="url(#lgr)"></circle>
+          <path d="M41 19 C58 24 61 40 45 50 L31 58 L31 37 C31 27 34 20 41 19 Z" fill="url(#lgr)"></path>
+          <!-- white heart interior -->
+          <path d="M31 52 C24 45 14 37 14 25 C14 18 19 14 25 14 C28 14 30 16 31 19 C32 16 34 14 37 14 C43 14 48 18 48 25 C48 37 38 45 31 52 Z" fill="white"></path>
+          <!-- checkmark -->
+          <path d="M22 29 L29 37 L42 22" stroke="#5C5CE8" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </div>
+      <div class="auth-h1">Family</div>
+      <div class="auth-sub">Планер для всей семьи</div>
+    </div>
+    <div class="seg" style="margin-bottom:20px" id="auth-seg">
+      <button class="seg-b on" onclick="authTab('login')">Вход</button>
+      <button class="seg-b" onclick="authTab('reg')">Регистрация</button>
+    </div>
+    <div class="igroup" style="margin-bottom:16px">
+      <div class="irow" id="row-name" style="display:none">
+        <span class="ilabel">Имя</span>
+        <input class="ifield" id="f-name" type="text" placeholder="Как вас зовут">
+      </div>
+      <div class="irow">
+        <span class="ilabel">Логин</span>
+        <input class="ifield" id="f-login" type="text" placeholder="ivan_petrov" autocomplete="off" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_]/g,'')">
+      </div>
+      <div class="irow">
+        <span class="ilabel">Пароль</span>
+        <input class="ifield" id="f-pass" type="password" placeholder="Пароль">
+      </div>
+    </div>
+    <button class="btn btn-p" id="auth-btn" onclick="authSubmit()">Войти</button>
+    <div style="height:24px"></div>
+  </div>
+</div>
+
+<!-- SETUP -->
+<div id="screen-setup" class="screen">
+  <div class="sb" style="background:var(--bg)"><span class="t">19:29</span>
+    <div class="sb-ic">
+      <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="2" width="3" height="9" rx="1"></rect><rect x="4.5" y="1" width="3" height="10" rx="1"></rect><rect x="9" y="0" width="3" height="11" rx="1"></rect><rect x="13" y="0" width="3" height="11" rx="1" opacity=".3"></rect></svg>
+      <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x=".5" y=".5" width="18" height="10" rx="2.5" stroke="currentColor" stroke-opacity=".35"></rect><rect x="2" y="2" width="11" height="7" rx="1" fill="currentColor"></rect><path d="M20 3.5v4a2 2 0 000-4z" fill="currentColor" fill-opacity=".4"></path></svg>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nb" onclick="logoutUser()">Выйти</button>
+    <span class="nav-title">Семья</span>
+  </div>
+  <div class="content">
+    <div id="my-fams-sec" style="display:none">
+      <div class="sec"><div class="sec-h">Мои семьи</div><div class="card" id="my-fams-list"></div></div>
+      <div style="height:16px"></div>
+      <button class="btn btn-g" onclick="showAddFam()">Добавить семью</button>
+    </div>
+    <div id="add-fam-sec">
+      <div style="padding:28px 32px 20px;text-align:center">
+        <div style="font-size:26px;font-weight:800;letter-spacing:-.6px;line-height:1.25;color:var(--text)">
+          Добро пожаловать!<br>Создайте или<br>присоединитесь к семье
+        </div>
+      </div>
+      <div style="margin:0 16px;display:flex;flex-direction:column;gap:12px">
+        <div class="card" style="padding:20px;box-shadow:var(--sh)">
+          <div style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px">Создать семью</div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:14px">Вы станете администратором</div>
+          <div class="igroup" style="margin:0 0 14px"><div class="irow">
+            <input class="ifield L" id="nfn" type="text" placeholder="Название (напр. Семья Ивановых)">
+          </div></div>
+          <button class="btn btn-p" style="width:100%;margin:0;border-radius:var(--r-sm)" onclick="createFam()">Создать</button>
+        </div>
+        <div class="card" style="padding:20px;box-shadow:var(--sh)">
+          <div style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px">Присоединиться</div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:14px">Введите код от администратора</div>
+          <div class="igroup" style="margin:0 0 14px"><div class="irow">
+            <input class="ifield L" id="jcode" type="text" maxlength="6" placeholder="ABC123" style="text-transform:uppercase;letter-spacing:5px;font-size:22px;font-weight:700" oninput="this.value=this.value.toUpperCase()">
+          </div></div>
+          <button class="btn btn-g" style="width:100%;margin:0;border-radius:var(--r-sm)" onclick="joinFam()">Войти в семью</button>
+        </div>
+      </div>
+      <div style="height:32px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="screen-main" class="screen active">
+  <div class="sb"><span class="t">19:29</span>
+    <div class="sb-ic">
+      <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="2" width="3" height="9" rx="1"></rect><rect x="4.5" y="1" width="3" height="10" rx="1"></rect><rect x="9" y="0" width="3" height="11" rx="1"></rect><rect x="13" y="0" width="3" height="11" rx="1" opacity=".3"></rect></svg>
+      <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x=".5" y=".5" width="18" height="10" rx="2.5" stroke="currentColor" stroke-opacity=".35"></rect><rect x="2" y="2" width="11" height="7" rx="1" fill="currentColor"></rect><path d="M20 3.5v4a2 2 0 000-4z" fill="currentColor" fill-opacity=".4"></path></svg>
+    </div>
+  </div>
+
+  <div class="main-body">
+
+    <!-- TASKS -->
+    <div id="view-tasks" class="tab-view active">
+      <div class="nav">
+        <div style="display:flex;align-items:center;gap:5px;cursor:pointer;z-index:1" onclick="openFamPicker()">
+          <span id="nav-fn" style="font-size:17px;font-weight:700;color:var(--p)">Решидовы</span>
+          <svg width="11" height="7" viewBox="0 0 11 7" fill="none"><path d="M1 1l4.5 4.5L10 1" stroke="var(--p)" stroke-width="1.6" stroke-linecap="round"></path></svg>
+        </div>
+        <button class="nb r" onclick="openCreateTask()" style="font-size:28px;font-weight:200;line-height:1">+</button>
+      </div>
+      <div style="padding:12px 16px 4px;flex-shrink:0">
+        <div class="seg" style="margin:0">
+          <button class="seg-b on" id="ts-mine" onclick="taskTab('mine')">Мои задачи</button>
+          <button class="seg-b" id="ts-all" onclick="taskTab('all')">Все задачи</button>
+        </div>
+      </div>
+      <div class="content" id="tasks-ct"><div class="empty"><div class="empty-t">Задач нет</div><div class="empty-s">Нажмите + чтобы создать задачу</div></div></div>
+    </div>
+
+    <!-- CALENDAR -->
+    <div id="view-calendar" class="tab-view">
+      <div class="nav">
+        <span class="nav-title" id="nav-cal">Календарь</span>
+        <button class="nb r" onclick="openCreateEvent()" style="font-size:28px;font-weight:200;line-height:1">+</button>
+      </div>
+      <div class="content" id="cal-ct" style="position:relative"></div>
+    </div>
+
+    <!-- CHAT -->
+    <div id="view-chat" class="tab-view">
+      <div class="nav"><span class="nav-title" id="nav-cn">Решидовы</span></div>
+      <div class="chat-msgs" id="chat-msgs"></div>
+      <div class="chat-in-area">
+        <button class="icon-btn" onclick="openCreatePoll()" title="Голосование">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <rect x="2" y="10" width="4" height="8" rx="1" fill="currentColor"></rect>
+            <rect x="8" y="6" width="4" height="12" rx="1" fill="currentColor"></rect>
+            <rect x="14" y="2" width="4" height="16" rx="1" fill="currentColor"></rect>
+          </svg>
+        </button>
+        <textarea class="chat-in" id="chat-in" placeholder="Сообщение" rows="1" oninput="autoResize(this)" onkeydown="chatKey(event)"></textarea>
+        <button class="send-btn" onclick="sendMsg()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M7 12V2M7 2L2.5 6.5M7 2l4.5 4.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- FAMILY -->
+    <div id="view-family" class="tab-view">
+      <div class="nav">
+        <span class="nav-title" id="nav-fam">Решидовы</span>
+        <button class="nb r" onclick="showInvite()" style="font-size:14px">Пригласить</button>
+      </div>
+      <div class="content" id="fam-ct">
+    <div class="sec"><div class="sec-h">Участники — 1</div><div class="card">
+      <div class="crow s">
+          <div class="av" style="width:42px;height:42px;font-size:16px;background:#5C5CE8">А</div>
+          <div class="cm"><div class="ct">Абдулла <span style="font-size:12px;color:var(--text3)">(Вы)</span></div>
+            <div class="cs">Администратор</div></div>
+          
+        </div>
+    </div></div>
+    
+    <div class="sec"><div class="sec-h">Управление</div><div class="card">
+      <div class="crow" onclick="showInvite()"><div class="cm"><div class="ct" style="color:var(--p)">Пригласить участника</div><div class="cs">Показать код приглашения</div></div><div class="chev"></div></div>
+      <div class="crow" onclick="openFamPicker()"><div class="cm"><div class="ct" style="color:var(--p)">Сменить или добавить семью</div></div><div class="chev"></div></div>
+    </div></div>
+    <div style="height:20px"></div>
+    <button class="btn btn-red" onclick="leaveFamily()">Покинуть семью</button>
+    <div style="height:20px"></div></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="view-profile" class="tab-view">
+      <div class="nav"><span class="nav-title">Профиль</span></div>
+      <div class="content" id="prof-ct">
+    <div style="padding:28px 0 16px;display:flex;flex-direction:column;align-items:center;gap:10px">
+      <div class="pav" style="width:82px;height:82px;font-size:30px;background:#5C5CE8">А</div>
+      <div style="font-size:24px;font-weight:800;letter-spacing:-.5px;color:var(--text)">Абдулла</div>
+      <div style="font-size:14px;color:var(--text2)">@reshido_abdulla</div>
+      
+    </div>
+    <div class="sec" style="margin-top:0"><div class="sec-h">Личные данные</div><div class="card">
+      <div class="crow" onclick="openEditProf()"><div class="cm"><div class="ct">Имя</div></div><span class="cv">Абдулла</span><div class="chev"></div></div>
+      <div class="crow" onclick="openEditProf()"><div class="cm"><div class="ct">Дата рождения</div></div><span class="cv">Не указан</span><div class="chev"></div></div>
+      <div class="crow s"><div class="cm"><div class="ct">Логин</div></div><span class="cv">@reshido_abdulla</span></div>
+    </div></div>
+    <div class="sec"><div class="sec-h">Статистика</div><div class="card">
+      <div class="crow s"><div class="cm"><div class="ct">Выполнено задач</div></div><span style="color:var(--green);font-weight:700;font-size:17px">0</span></div>
+      <div class="crow s"><div class="cm"><div class="ct">Активных задач</div></div><span class="cv">0</span></div>
+    </div></div>
+    <div class="sec"><div class="sec-h">Мои семьи</div><div class="card">
+      <div class="crow" onclick="pickFam('bnsgfy6fqoamqfetovw');switchTab('tasks')">
+        <div class="av" style="width:36px;height:36px;font-size:14px;background:#1DB976">Р</div>
+        <div class="cm"><div class="ct">Решидовы</div><div class="cs">1 участников · Администратор</div></div>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9l4 4 8-8" stroke="var(--p)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </div>
+      <div class="crow" onclick="goSetup()"><div class="cm"><div class="ct" style="color:var(--p)">Добавить семью</div></div><div class="chev"></div></div>
+    </div></div>
+    <div style="height:20px"></div>
+    <button class="btn btn-ghost" onclick="logoutUser()">Выйти из аккаунта</button>
+    <div style="height:20px"></div></div>
+    </div>
+
+  </div>
+
+  <!-- 5 TABS -->
+  <div class="tab-bar">
+    <div class="ti on" id="ti-tasks" onclick="switchTab('tasks')">
+      <div class="ti-pip"></div>
+      <svg class="ti-icon" viewBox="0 0 22 22" fill="none">
+        <rect x="3" y="3" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.6"></rect>
+        <path d="M7 9h8M7 12h6M7 15h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+      </svg>
+      <span class="ti-label">Задачи</span>
+    </div>
+    <div class="ti" id="ti-calendar" onclick="switchTab('calendar')">
+      <div class="ti-pip"></div>
+      <svg class="ti-icon" viewBox="0 0 22 22" fill="none">
+        <rect x="2" y="4" width="18" height="16" rx="3" stroke="currentColor" stroke-width="1.6"></rect>
+        <path d="M2 9h18" stroke="currentColor" stroke-width="1.6"></path>
+        <path d="M7 2v4M15 2v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+        <circle cx="7" cy="13" r="1" fill="currentColor"></circle>
+        <circle cx="11" cy="13" r="1" fill="currentColor"></circle>
+        <circle cx="15" cy="13" r="1" fill="currentColor"></circle>
+      </svg>
+      <span class="ti-label">Календарь</span>
+    </div>
+    <div class="ti" id="ti-chat" onclick="switchTab('chat')">
+      <div class="ti-pip"></div>
+      <svg class="ti-icon" viewBox="0 0 22 22" fill="none">
+        <path d="M19 11c0 3.5-3.58 6.5-8 6.5a8.3 8.3 0 01-2.9-.52L3 19l1.6-3.8A6.4 6.4 0 013 11C3 7.5 6.58 4.5 11 4.5S19 7.5 19 11z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path>
+      </svg>
+      <span class="ti-label">Чат</span>
+    </div>
+    <div class="ti" id="ti-family" onclick="switchTab('family')">
+      <div class="ti-pip"></div>
+      <svg class="ti-icon" viewBox="0 0 22 22" fill="none">
+        <circle cx="11" cy="7.5" r="3.5" stroke="currentColor" stroke-width="1.6"></circle>
+        <path d="M4 20c0-3.87 3.13-7 7-7s7 3.13 7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+      </svg>
+      <span class="ti-label">Семья</span>
+    </div>
+    <div class="ti" id="ti-profile" onclick="switchTab('profile')">
+      <div class="ti-pip"></div>
+      <svg class="ti-icon" viewBox="0 0 22 22" fill="none">
+        <circle cx="11" cy="8" r="3.5" stroke="currentColor" stroke-width="1.6"></circle>
+        <path d="M3.5 20c0-4.14 3.36-7.5 7.5-7.5s7.5 3.36 7.5 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+      </svg>
+      <span class="ti-label">Профиль</span>
+    </div>
+  </div>
+</div>
+
+<!-- SHEET: CREATE TASK -->
+<div class="overlay" id="ov-create">
+  <div class="sheet" style="max-height:95%">
+    <div class="sh"></div>
+    <div class="sh-hd">
+      <button class="nb" onclick="closeSheet('ov-create')">Отмена</button>
+      <span class="sh-title">Новая задача</span>
+      <button class="nb r fw" onclick="submitTask()">Создать</button>
+    </div>
+    <div class="sh-body">
+      <div class="sec" style="margin-top:0">
+        <div class="igroup">
+          <div class="irow"><input class="ifield L" id="t-title" type="text" placeholder="Название задачи"></div>
+          <div class="irow" style="min-height:80px;align-items:flex-start">
+            <textarea class="ifield" id="t-desc" placeholder="Описание" style="height:70px;padding:10px 0"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-h">Параметры</div>
+        <div class="igroup">
+          <div class="irow"><span class="ilabel">Приоритет</span>
+            <select class="ifield" id="t-prio"><option value="low">Низкий</option><option value="med" selected="">Средний</option><option value="high">Высокий</option></select>
+          </div>
+          <div class="irow"><span class="ilabel">Срок</span><input class="ifield" id="t-dl" type="datetime-local"></div>
+          <div class="irow"><span class="ilabel">Повторение</span>
+            <select class="ifield" id="t-type"><option value="once">Разовая</option><option value="daily">Каждый день</option><option value="weekly">Каждую неделю</option><option value="monthly">Каждый месяц</option></select>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-h">Назначить</div>
+        <div class="card" style="padding:14px 16px">
+          <div style="font-size:13px;color:var(--text2);margin-bottom:8px">Никого не выбрать — задача у всех</div>
+          <div class="chips" id="achips"></div>
+        </div>
+      </div>
+      <div style="height:16px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SHEET: TASK DETAIL -->
+<div class="overlay" id="ov-detail">
+  <div class="sheet" style="max-height:95%">
+    <div class="sh"></div>
+    <div class="sh-hd">
+      <button class="nb" onclick="closeSheet('ov-detail')">Закрыть</button>
+      <span class="sh-title" id="d-title">Задача</span>
+      <button class="nb r red fw" id="d-del" style="display:none" onclick="deleteTask()">Удалить</button>
+    </div>
+    <div class="sh-body" id="d-body"></div>
+  </div>
+</div>
+
+<!-- SHEET: CREATE EVENT -->
+<div class="overlay" id="ov-event-create">
+  <div class="sheet" style="max-height:95%">
+    <div class="sh"></div>
+    <div class="sh-hd">
+      <button class="nb" onclick="closeSheet('ov-event-create')">Отмена</button>
+      <span class="sh-title">Мероприятие</span>
+      <button class="nb r fw" onclick="submitEvent()">Создать</button>
+    </div>
+    <div class="sh-body">
+      <div class="sec" style="margin-top:0">
+        <div class="igroup">
+          <div class="irow"><input class="ifield L" id="ev-title" type="text" placeholder="Название (напр. Кафе Мечта)"></div>
+          <div class="irow" style="min-height:70px;align-items:flex-start">
+            <textarea class="ifield" id="ev-desc" placeholder="Описание (необязательно)" style="height:60px;padding:10px 0"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-h">Когда</div>
+        <div class="igroup">
+          <div class="irow"><span class="ilabel">Дата</span><input class="ifield" id="ev-date" type="date"></div>
+          <div class="irow"><span class="ilabel">Время</span><input class="ifield" id="ev-time" type="time"></div>
+          <div class="irow"><span class="ilabel">Место</span><input class="ifield L" id="ev-loc" type="text" placeholder="Адрес или название"></div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-h">Участники</div>
+        <div class="card" style="padding:14px 16px">
+          <div style="font-size:13px;color:var(--text2);margin-bottom:8px">Никого не выбрать — приглашены все</div>
+          <div class="chips" id="ev-chips"></div>
+        </div>
+      </div>
+      <div style="height:16px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SHEET: EVENT DETAIL -->
+<div class="overlay" id="ov-event-detail">
+  <div class="sheet" style="max-height:95%">
+    <div class="sh"></div>
+    <div class="sh-hd">
+      <button class="nb" onclick="closeSheet('ov-event-detail')">Закрыть</button>
+      <span class="sh-title" id="evd-title">Мероприятие</span>
+      <button class="nb r red fw" id="evd-del" style="display:none" onclick="deleteEvent()">Удалить</button>
+    </div>
+    <div class="sh-body" id="evd-body"></div>
+  </div>
+</div>
+
+<!-- SHEET: CREATE POLL -->
+<div class="overlay" id="ov-poll">
+  <div class="sheet">
+    <div class="sh"></div>
+    <div class="sh-hd">
+      <button class="nb" onclick="closeSheet('ov-poll')">Отмена</button>
+      <span class="sh-title">Голосование</span>
+      <button class="nb r fw" onclick="submitPoll()">Создать</button>
+    </div>
+    <div class="sh-body">
+      <div class="sec" style="margin-top:0">
+        <div class="igroup">
+          <div class="irow"><input class="ifield L" id="poll-q" type="text" placeholder="Вопрос для голосования"></div>
+        </div>
+      </div>
+      <div class="sec">
+        <div class="sec-h">Варианты ответов</div>
+        <div class="igroup" id="poll-opts-group">
+          <div class="irow"><input class="ifield L poll-opt-inp" type="text" placeholder="Вариант 1"></div>
+          <div class="irow"><input class="ifield L poll-opt-inp" type="text" placeholder="Вариант 2"></div>
+        </div>
+      </div>
+      <div style="margin:10px 16px 0">
+        <button class="btn btn-g" style="margin:0;padding:12px;font-size:15px" onclick="addPollOption()">+ Добавить вариант</button>
+      </div>
+      <div style="height:16px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SHEET: FAM PICKER -->
+<div class="overlay" id="ov-fpick">
+  <div class="sheet">
+    <div class="sh"></div>
+    <div class="sh-hd">
+      <button class="nb" onclick="closeSheet('ov-fpick')">Закрыть</button>
+      <span class="sh-title">Выбрать семью</span>
+      <button class="nb r" onclick="closeSheet('ov-fpick');goSetup()">Добавить</button>
+    </div>
+    <div class="sh-body"><div class="sec" style="margin-top:8px"><div class="card" id="fpick-list"></div></div></div>
+  </div>
+</div>
+
+<!-- SHEET: INVITE -->
+<div class="overlay" id="ov-invite">
+  <div class="sheet">
+    <div class="sh"></div>
+    <div class="sh-hd">
+      <button class="nb" onclick="closeSheet('ov-invite')">Закрыть</button>
+      <span class="sh-title">Приглашение</span>
+      <span style="min-width:60px"></span>
+    </div>
+    <div class="sh-body">
+      <div style="padding:10px 32px;text-align:center">
+        <div style="font-size:15px;color:var(--text2);margin-bottom:4px">Код приглашения</div>
+        <div class="inv-code" id="inv-code"></div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:28px">Отправьте этот код члену семьи</div>
+        <button class="btn btn-p" onclick="copyCode()">Скопировать</button>
+      </div>
+      <div style="height:10px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SHEET: EDIT PROFILE -->
+<div class="overlay" id="ov-edit-prof">
+  <div class="sheet">
+    <div class="sh"></div>
+    <div class="sh-hd">
+      <button class="nb" onclick="closeSheet('ov-edit-prof')">Отмена</button>
+      <span class="sh-title">Редактировать</span>
+      <button class="nb r fw" onclick="saveProfile()">Сохранить</button>
+    </div>
+    <div class="sh-body">
+      <div class="sec" style="margin-top:8px">
+        <div class="igroup">
+          <div class="irow"><span class="ilabel">Имя</span><input class="ifield" id="ep-name" type="text"></div>
+          <div class="irow"><span class="ilabel">День рождения</span><input class="ifield" id="ep-bday" type="date"></div>
+        </div>
+      </div>
+      <div style="height:20px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+</div>
+
+<script>
+// ─── DB ─────────────────────────────────────────────
+const DB={
+  g:k=>JSON.parse(localStorage.getItem('fp4_'+k)||'null'),
+  s:(k,v)=>localStorage.setItem('fp4_'+k,JSON.stringify(v)),
+  users:()=>DB.g('users')||[],setUsers:v=>DB.s('users',v),
+  fams:()=>DB.g('fams')||[],setFams:v=>DB.s('fams',v),
+  tasks:()=>DB.g('tasks')||[],setTasks:v=>DB.s('tasks',v),
+  msgs:()=>DB.g('msgs')||[],setMsgs:v=>DB.s('msgs',v),
+  events:()=>DB.g('events')||[],setEvents:v=>DB.s('events',v),
+  curUid:()=>DB.g('curUid'),setCurUid:v=>DB.s('curUid',v),
+  curFid:()=>DB.g('curFid'),setCurFid:v=>DB.s('curFid',v),
+};
+
+// ─── STATE ──────────────────────────────────────────
+let CU=null, CF=null, curTaskId=null, curEvId=null;
+let taskMode='mine', selAss=[], evSelAss=[];
+let calYear=new Date().getFullYear(), calMonth=new Date().getMonth();
+let calSelDay=new Date().getDate();
+
+const COLORS=['#5C5CE8','#FF4757','#FF7A00','#1DB976','#A55EEA','#FF6EB4','#00B8D9','#E84393'];
+let pollOptCount=2;
+const MONTHS=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+
+// ─── INIT ───────────────────────────────────────────
+window.onload=()=>{
+  const tick=()=>{const t=new Date();const s=t.getHours()+':'+String(t.getMinutes()).padStart(2,'0');document.querySelectorAll('.t').forEach(e=>e.textContent=s);};
+  tick();setInterval(tick,1000);
+  const uid=DB.curUid();
+  if(uid){const u=DB.users().find(u=>u.id===uid);if(u){CU=u;const fid=DB.curFid();if(fid){const f=DB.fams().find(f=>f.id===fid&&f.members.some(m=>m.uid===uid));if(f){CF=f;goMain();return;}}goSetup();return;}}
+  showScr('screen-auth');
+};
+
+function showScr(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function goMain(){showScr('screen-main');updNames();switchTab('tasks');renderFam();renderProf();}
+function goSetup(){
+  const mf=DB.fams().filter(f=>f.members.some(m=>m.uid===CU.id));
+  if(mf.length){
+    document.getElementById('my-fams-sec').style.display='block';
+    document.getElementById('add-fam-sec').style.display='none';
+    document.getElementById('my-fams-list').innerHTML=mf.map(f=>`
+      <div class="crow" onclick="pickFam('${f.id}')">
+        <div class="av" style="width:40px;height:40px;font-size:15px;background:${f.color}">${ini(f.name)}</div>
+        <div class="cm"><div class="ct">${esc(f.name)}</div><div class="cs">${f.members.length} чел. · ${f.adminId===CU.id?'Администратор':'Участник'}</div></div>
+        <div class="chev"></div>
+      </div>`).join('');
+  } else {
+    document.getElementById('my-fams-sec').style.display='none';
+    document.getElementById('add-fam-sec').style.display='block';
+  }
+  showScr('screen-setup');
+}
+function showAddFam(){document.getElementById('add-fam-sec').style.display='block';}
+function updNames(){if(!CF)return;['nav-fn','nav-cn','nav-fam'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=i===0?CF.name:CF.name;});document.getElementById('nav-fn').textContent=CF.name;document.getElementById('nav-cn').textContent=CF.name;document.getElementById('nav-fam').textContent=CF.name;}
+
+// ─── AUTH ───────────────────────────────────────────
+let authMode='login';
+function authTab(m){
+  authMode=m;
+  document.querySelectorAll('#auth-seg .seg-b').forEach((b,i)=>b.classList.toggle('on',(m==='login')===(i===0)));
+  document.getElementById('row-name').style.display=m==='reg'?'flex':'none';
+  document.getElementById('auth-btn').textContent=m==='login'?'Войти':'Создать аккаунт';
+}
+function authSubmit(){
+  const login=document.getElementById('f-login').value.trim().toLowerCase();
+  const pass=document.getElementById('f-pass').value;
+  if(!login||!pass)return toast('Заполните все поля');
+  if(!/^[a-z0-9_]{2,}$/.test(login))return toast('Логин: буквы, цифры, _ (мин. 2 символа)');
+  const users=DB.users();
+  if(authMode==='login'){
+    const u=users.find(u=>u.login===login&&u.pass===pass);
+    if(!u)return toast('Неверный логин или пароль');
+    CU=u;DB.setCurUid(u.id);
+  } else {
+    const name=document.getElementById('f-name').value.trim();
+    if(!name)return toast('Введите имя');
+    if(users.find(u=>u.login===login))return toast('Этот логин уже занят');
+    const u={id:uid(),name,login,pass,color:rndClr(),birthday:null};
+    users.push(u);DB.setUsers(users);CU=u;DB.setCurUid(u.id);
+  }
+  goSetup();
+}
+function logoutUser(){CU=null;CF=null;DB.setCurUid(null);DB.setCurFid(null);showScr('screen-auth');}
+
+// ─── FAMILY SETUP ───────────────────────────────────
+function createFam(){
+  const name=document.getElementById('nfn').value.trim();
+  if(!name)return toast('Введите название');
+  const f={id:uid(),name,adminId:CU.id,color:rndClr(),inviteCode:rndCode(),members:[{uid:CU.id,name:CU.name,color:CU.color}]};
+  const fams=DB.fams();fams.push(f);DB.setFams(fams);
+  CF=f;DB.setCurFid(f.id);document.getElementById('nfn').value='';goMain();
+}
+function joinFam(){
+  const code=document.getElementById('jcode').value.trim().toUpperCase();
+  if(code.length<4)return toast('Введите код');
+  const fams=DB.fams();const f=fams.find(f=>f.inviteCode===code);
+  if(!f)return toast('Семья не найдена');
+  if(!f.members.some(m=>m.uid===CU.id)){f.members.push({uid:CU.id,name:CU.name,color:CU.color});DB.setFams(fams);}
+  CF=f;DB.setCurFid(f.id);document.getElementById('jcode').value='';goMain();
+}
+function pickFam(id){const f=DB.fams().find(f=>f.id===id);if(!f)return;CF=f;DB.setCurFid(id);goMain();}
+
+// ─── TABS ───────────────────────────────────────────
+function switchTab(tab){
+  document.querySelectorAll('.tab-view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.ti').forEach(t=>t.classList.remove('on'));
+  document.getElementById('view-'+tab).classList.add('active');
+  document.getElementById('ti-'+tab).classList.add('on');
+  if(tab==='tasks') renderTasks();
+  if(tab==='calendar') renderCalendar();
+  if(tab==='chat'){renderChat();setTimeout(()=>{const c=document.getElementById('chat-msgs');c.scrollTop=c.scrollHeight;},60);}
+  if(tab==='family') renderFam();
+  if(tab==='profile') renderProf();
+}
+
+// ─── TASKS ──────────────────────────────────────────
+function taskTab(t){
+  taskMode=t;
+  document.getElementById('ts-mine').classList.toggle('on',t==='mine');
+  document.getElementById('ts-all').classList.toggle('on',t==='all');
+  renderTasks();
+}
+function renderTasks(){
+  if(!CF)return;
+  const all=DB.tasks().filter(t=>t.fid===CF.id&&t.status!=='archived');
+  const list=taskMode==='mine'?all.filter(t=>t.createdBy===CU.id||t.assignees.length===0||t.assignees.includes(CU.id)):all;
+  const ct=document.getElementById('tasks-ct');
+  if(!list.length){ct.innerHTML=`<div class="empty"><div class="empty-t">Задач нет</div><div class="empty-s">Нажмите + чтобы создать задачу</div></div>`;return;}
+  const grp={open:{l:'Открытые — для всех',i:[]},assigned:{l:'В работе',i:[]},done:{l:'На проверке',i:[]},verified:{l:'Выполненные',i:[]}};
+  list.forEach(t=>(grp[t.status]||grp.open).i.push(t));
+  let html='';
+  Object.entries(grp).forEach(([st,g])=>{
+    if(!g.i.length)return;
+    html+=`<div class="sec"><div class="sec-h">${g.l}</div><div class="card">`;
+    g.i.forEach(t=>{
+      const pc={high:'ph',med:'pm',low:'pl'}[t.prio]||'pm';
+      const dl=t.dl?fmtDl(t.dl):null;
+      const an=assNames(t);
+      const strike=st==='verified'?'text-decoration:line-through;color:var(--text3);':'';
+      html+=`<div class="crow" onclick="openDetail('${t.id}')">
+        <div class="pdot ${pc}"></div>
+        <div class="cm"><div class="ct" style="${strike}">${esc(t.title)}</div>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:3px;flex-wrap:wrap">
+            ${dl?`<span class="${dl.c}" style="font-size:12px">${dl.t}</span>`:''}
+            <span style="font-size:12px;color:var(--text2)">${an}</span>
+          </div></div>
+        ${t.type!=='once'?`<span class="rbadge">↻</span>`:''}
+        <div class="chev"></div>
+      </div>`;
+    });
+    html+='</div></div>';
+  });
+  ct.innerHTML=html;
+}
+function assNames(task){if(!task.assignees.length)return 'Для всех';return task.assignees.map(id=>{const m=CF.members.find(m=>m.uid===id);return m?m.name.split(' ')[0]:'?';}).join(', ');}
+function fmtDl(dl){const d=new Date(dl),now=new Date(),diff=d-now;if(diff<0)return{t:'Просрочена',c:'dl-ov'};const days=Math.floor(diff/86400000);if(days===0)return{t:'Сегодня',c:'dl-near'};if(days===1)return{t:'Завтра',c:'dl-near'};if(days<=3)return{t:`Через ${days} дн.`,c:'dl-near'};return{t:d.toLocaleDateString('ru',{day:'numeric',month:'short'}),c:'dl-ok'};}
+
+function openCreateTask(){
+  selAss=[];
+  ['t-title','t-desc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('t-prio').value='med';
+  document.getElementById('t-dl').value='';
+  document.getElementById('t-type').value='once';
+  const others=CF.members.filter(m=>m.uid!==CU.id);
+  document.getElementById('achips').innerHTML=others.map(m=>`<button class="chip" id="chip-${m.uid}" onclick="togAss('${m.uid}',this)">${m.name.split(' ')[0]}</button>`).join('');
+  openSheet('ov-create');
+}
+function togAss(id,el){const i=selAss.indexOf(id);if(i===-1){selAss.push(id);el.classList.add('on');}else{selAss.splice(i,1);el.classList.remove('on');}}
+function submitTask(){
+  const title=document.getElementById('t-title').value.trim();
+  if(!title)return toast('Введите название задачи');
+  const task={id:uid(),fid:CF.id,title,desc:document.getElementById('t-desc').value.trim(),
+    prio:document.getElementById('t-prio').value,dl:document.getElementById('t-dl').value||null,
+    type:document.getElementById('t-type').value,assignees:[...selAss],
+    status:selAss.length?'assigned':'open',createdBy:CU.id,createdByName:CU.name,
+    completedBy:null,verifiedAt:null,createdAt:new Date().toISOString()};
+  const tasks=DB.tasks();tasks.push(task);DB.setTasks(tasks);
+  closeSheet('ov-create');renderTasks();toast('Задача создана');
+}
+function openDetail(taskId){
+  const task=DB.tasks().find(t=>t.id===taskId);if(!task)return;
+  curTaskId=taskId;
+  document.getElementById('d-title').textContent=task.title;
+  document.getElementById('d-del').style.display=task.createdBy===CU.id?'block':'none';
+  const pl={high:'Высокий',med:'Средний',low:'Низкий'}[task.prio];
+  const pc={high:'var(--red)',med:'var(--orange)',low:'var(--green)'}[task.prio];
+  const tl={once:'Разовая',daily:'Каждый день',weekly:'Каждую неделю',monthly:'Каждый месяц'}[task.type];
+  const dlTxt=task.dl?new Date(task.dl).toLocaleString('ru',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}):'Не указан';
+  const an=assNames(task);const creator=CF.members.find(m=>m.uid===task.createdBy);
+  const cname=creator?creator.name:task.createdByName;
+  const isMine=task.assignees.includes(CU.id)||task.assignees.length===0;
+  const amC=task.createdBy===CU.id;
+  let action='';
+  if(task.status==='open'){action=`<button class="btn btn-p" onclick="takeTask('${taskId}')">Принять задачу</button>`;}
+  else if(task.status==='assigned'&&isMine){action=`<button class="btn btn-p" style="background:var(--green);box-shadow:0 4px 16px rgba(29,185,118,.35)" onclick="markDone('${taskId}')">Готово — отметить выполненной</button>`;}
+  else if(task.status==='assigned'&&!isMine){action=`<div class="act-info" style="color:var(--text2)">Задача у другого участника</div>`;}
+  else if(task.status==='done'){
+    if(amC){action=`<button class="btn btn-p" style="background:var(--green);box-shadow:0 4px 16px rgba(29,185,118,.35)" onclick="verifyTask('${taskId}')">Проверено — подтвердить</button><div style="height:8px"></div><button class="btn btn-g" onclick="rejectTask('${taskId}')">Вернуть в работу</button>`;}
+    else{action=`<div class="act-info" style="color:var(--orange)">Ожидает проверки создателя</div>`;}
+  }else if(task.status==='verified'){action=`<div class="act-info" style="color:var(--green)">Выполнено и проверено ✓</div>`;}
+  document.getElementById('d-body').innerHTML=`
+    <div class="sec" style="margin-top:12px"><div class="card">
+      ${task.desc?`<div class="crow s" style="flex-direction:column;align-items:flex-start;gap:5px"><div style="font-size:12px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.4px">Описание</div><div style="font-size:15px;line-height:1.5;color:var(--text)">${esc(task.desc)}</div></div>`:''}
+      <div class="crow s"><div class="cm"><div class="ct">Приоритет</div></div><span style="color:${pc};font-weight:600">${pl}</span></div>
+      <div class="crow s"><div class="cm"><div class="ct">Срок</div></div><span class="cv" style="font-size:14px">${dlTxt}</span></div>
+      <div class="crow s"><div class="cm"><div class="ct">Тип</div></div><span class="cv">${tl}</span></div>
+      <div class="crow s"><div class="cm"><div class="ct">Назначена</div></div><span class="cv">${an}</span></div>
+      <div class="crow s"><div class="cm"><div class="ct">Создал</div></div><span class="cv">${esc(cname)}</span></div>
+    </div></div>
+    <div style="height:20px"></div>
+    <div style="margin:0 16px">${action}</div>
+    <div style="height:24px"></div>`;
+  openSheet('ov-detail');
+}
+function takeTask(id){const tasks=DB.tasks();const t=tasks.find(t=>t.id===id);if(!t)return;t.assignees=[CU.id];t.status='assigned';DB.setTasks(tasks);closeSheet('ov-detail');renderTasks();toast('Задача принята');}
+function markDone(id){const tasks=DB.tasks();const t=tasks.find(t=>t.id===id);if(!t)return;t.status='done';t.completedBy=CU.id;DB.setTasks(tasks);closeSheet('ov-detail');renderTasks();toast('Отмечено как выполненное');}
+function verifyTask(id){
+  const tasks=DB.tasks();const t=tasks.find(t=>t.id===id);if(!t)return;
+  if(t.type==='once'){t.status='verified';t.verifiedAt=new Date().toISOString();}
+  else{t.status='archived';const nd=nextDl(t.dl,t.type);tasks.push({...t,id:uid(),status:t.assignees.length?'assigned':'open',completedBy:null,verifiedAt:null,createdAt:new Date().toISOString(),dl:nd});}
+  DB.setTasks(tasks);closeSheet('ov-detail');renderTasks();toast('Задача подтверждена');
+}
+function rejectTask(id){const tasks=DB.tasks();const t=tasks.find(t=>t.id===id);if(!t)return;t.status='assigned';t.completedBy=null;DB.setTasks(tasks);closeSheet('ov-detail');renderTasks();toast('Возвращено в работу');}
+function deleteTask(){if(!curTaskId)return;DB.setTasks(DB.tasks().filter(t=>t.id!==curTaskId));closeSheet('ov-detail');renderTasks();toast('Задача удалена');}
+function nextDl(dl,type){if(!dl)return null;const d=new Date(dl);if(type==='daily')d.setDate(d.getDate()+1);else if(type==='weekly')d.setDate(d.getDate()+7);else if(type==='monthly')d.setMonth(d.getMonth()+1);return d.toISOString().slice(0,16);}
+
+// ─── CALENDAR ───────────────────────────────────────
+function renderCalendar(){
+  if(!CF)return;
+  const today=new Date();
+  const todayY=today.getFullYear(),todayM=today.getMonth(),todayD=today.getDate();
+
+  const firstDay=new Date(calYear,calMonth,1);
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  let startDow=(firstDay.getDay()+6)%7; // Mon=0
+
+  // events and tasks for this month
+  const evs=DB.events().filter(e=>e.fid===CF.id);
+  const tasks=DB.tasks().filter(t=>t.fid===CF.id&&t.dl&&t.status!=='archived'&&t.status!=='verified');
+
+  function dayHasEvent(d){
+    const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    return evs.some(e=>e.date===ds);
+  }
+  function dayHasTask(d){
+    const ds=new Date(calYear,calMonth,d);
+    return tasks.some(t=>{const td=new Date(t.dl);return td.getDate()===d&&td.getMonth()===calMonth&&td.getFullYear()===calYear;});
+  }
+
+  let cells='';
+  for(let i=0;i<startDow;i++) cells+=`<div class="cal-cell other"></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const isToday=d===todayD&&calMonth===todayM&&calYear===todayY;
+    const isSel=d===calSelDay&&calMonth===calMonth&&calYear===calYear;
+    let cls='cal-cell';
+    if(isToday)cls+=' today';
+    else if(isSel)cls+=' sel';
+    const hasEv=dayHasEvent(d),hasTask=dayHasTask(d);
+    const dots=(hasEv?`<div class="cal-dot ev"></div>`:'')+(hasTask?`<div class="cal-dot task"></div>`:'');
+    cells+=`<div class="${cls}" onclick="calSelectDay(${d})">${d}${(hasEv||hasTask)?`<div class="cal-dots">${dots}</div>`:''}</div>`;
+  }
+
+  const selDateStr=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(calSelDay).padStart(2,'0')}`;
+  const dayEvs=evs.filter(e=>e.date===selDateStr);
+  const dayTasks=tasks.filter(t=>{if(!t.dl)return false;const td=new Date(t.dl);return td.getDate()===calSelDay&&td.getMonth()===calMonth&&td.getFullYear()===calYear;});
+
+  // Upcoming events (next 60 days)
+  const nowD=new Date();
+  const upcoming=evs.filter(e=>{const ed=new Date(e.date);const diff=(ed-nowD)/86400000;return diff>=-1&&diff<=60;}).sort((a,b)=>new Date(a.date)-new Date(b.date));
+
+  let dayEvHtml='';
+  if(dayEvs.length||dayTasks.length){
+    dayEvHtml+=`<div class="sec-h" style="padding:0 4px;margin-bottom:8px">${calSelDay} ${MONTHS[calMonth].toLowerCase()}</div>`;
+    dayEvs.forEach(e=>{
+      const inv=e.participants.length?e.participants.length:CF.members.length;
+      const dec=e.declines.length;
+      dayEvHtml+=`<div onclick="openEventDetail('${e.id}')" style="cursor:pointer">${evCardHtml(e,inv,dec)}</div>`;
+    });
+    dayTasks.forEach(t=>{
+      const pc={high:'var(--red)',med:'var(--orange)',low:'var(--green)'}[t.prio];
+      dayEvHtml+=`<div class="card" style="margin-bottom:10px;padding:12px 14px;cursor:pointer" onclick="openDetail('${t.id}')"><div style="display:flex;gap:10px;align-items:center"><div class="pdot ${({high:'ph',med:'pm',low:'pl'})[t.prio]||'pm'}"></div><div><div style="font-size:15px;font-weight:600;color:var(--text)">${esc(t.title)}</div><div style="font-size:13px;color:var(--text2)">Задача · ${new Date(t.dl).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'})}</div></div></div></div>`;
+    });
+  }
+
+  let upcomingHtml='';
+  if(upcoming.length){
+    upcomingHtml+=`<div class="sec-h" style="padding:0 4px;margin:20px 0 8px">Ближайшие мероприятия</div>`;
+    upcoming.forEach(e=>{const inv=e.participants.length?e.participants.length:CF.members.length;const dec=e.declines.length;upcomingHtml+=`<div onclick="openEventDetail('${e.id}')" style="cursor:pointer">${evCardHtml(e,inv,dec)}</div>`;});
+  }
+
+  document.getElementById('cal-ct').innerHTML=`
+    <div class="cal-wrap">
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="calPrev()"><svg width="8" height="13" viewBox="0 0 8 13" fill="none"><path d="M7 1L1 6.5L7 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+        <span class="cal-month">${MONTHS[calMonth]} ${calYear}</span>
+        <button class="cal-nav-btn" onclick="calNext()"><svg width="8" height="13" viewBox="0 0 8 13" fill="none"><path d="M1 1l6 5.5L1 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="cal-wdays">${['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(d=>`<div class="cal-wd">${d}</div>`).join('')}</div>
+      <div class="cal-grid">${cells}</div>
+      <div class="cal-day-events">${dayEvHtml}</div>
+      ${upcomingHtml}
+      <div style="height:70px"></div>
+    </div>`;
+}
+
+function calSelectDay(d){calSelDay=d;renderCalendar();}
+function calPrev(){calMonth--;if(calMonth<0){calMonth=11;calYear--;}calSelDay=1;renderCalendar();}
+function calNext(){calMonth++;if(calMonth>11){calMonth=0;calYear++;}calSelDay=1;renderCalendar();}
+
+function evCardHtml(e,inv,dec){
+  const dt=new Date(e.date+' '+(e.time||'00:00'));
+  const dateStr=dt.toLocaleDateString('ru',{day:'numeric',month:'long'});
+  const timeStr=e.time||'';
+  const going=inv-dec;
+  return `<div class="ev-card">
+    <div class="ev-header">
+      <div class="ev-title">${esc(e.title)}</div>
+      <div class="ev-meta">
+        <span>📅 ${dateStr}${timeStr?' в '+timeStr:''}</span>
+        ${e.location?`<span>📍 ${esc(e.location)}</span>`:''}
+      </div>
+    </div>
+    <div style="padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap">
+      <span class="ev-pill go">Идут: ${going}</span>
+      ${dec?`<span class="ev-pill no">Не смогут: ${dec}</span>`:''}
+    </div>
+  </div>`;
+}
+
+// ─── EVENTS ─────────────────────────────────────────
+function openCreateEvent(){
+  evSelAss=[];
+  ['ev-title','ev-desc','ev-loc'].forEach(id=>document.getElementById(id).value='');
+  const today=new Date().toISOString().slice(0,10);
+  document.getElementById('ev-date').value=today;
+  document.getElementById('ev-time').value='';
+  const others=CF.members.filter(m=>m.uid!==CU.id);
+  document.getElementById('ev-chips').innerHTML=others.map(m=>`<button class="chip" id="evc-${m.uid}" onclick="togEvAss('${m.uid}',this)">${m.name.split(' ')[0]}</button>`).join('');
+  openSheet('ov-event-create');
+}
+function togEvAss(id,el){const i=evSelAss.indexOf(id);if(i===-1){evSelAss.push(id);el.classList.add('on');}else{evSelAss.splice(i,1);el.classList.remove('on');}}
+function submitEvent(){
+  const title=document.getElementById('ev-title').value.trim();
+  const date=document.getElementById('ev-date').value;
+  if(!title)return toast('Введите название мероприятия');
+  if(!date)return toast('Укажите дату');
+  const ev={
+    id:uid(),fid:CF.id,title,
+    desc:document.getElementById('ev-desc').value.trim(),
+    date,time:document.getElementById('ev-time').value||'',
+    location:document.getElementById('ev-loc').value.trim(),
+    createdBy:CU.id,createdByName:CU.name,
+    participants:[...evSelAss],declines:[],
+    createdAt:new Date().toISOString()
+  };
+  const evs=DB.events();evs.push(ev);DB.setEvents(evs);
+  closeSheet('ov-event-create');
+  // update calendar date selection
+  const parts=date.split('-');
+  calYear=parseInt(parts[0]);calMonth=parseInt(parts[1])-1;calSelDay=parseInt(parts[2]);
+  renderCalendar();toast('Мероприятие создано');
+}
+
+function openEventDetail(evId){
+  const evs=DB.events();const ev=evs.find(e=>e.id===evId);if(!ev)return;
+  curEvId=evId;
+  document.getElementById('evd-title').textContent=ev.title;
+  document.getElementById('evd-del').style.display=ev.createdBy===CU.id?'block':'none';
+
+  const dt=new Date(ev.date+' '+(ev.time||'00:00'));
+  const dateStr=dt.toLocaleDateString('ru',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  // Determine who's invited
+  const invitedMembers=ev.participants.length
+    ? CF.members.filter(m=>m.uid===ev.createdBy||ev.participants.includes(m.uid))
+    : CF.members;
+
+  const amInvited=invitedMembers.some(m=>m.uid===CU.id);
+  const iDeclined=ev.declines.includes(CU.id);
+  const amCreator=ev.createdBy===CU.id;
+
+  let myBtn='';
+  if(amInvited&&!amCreator){
+    if(iDeclined) myBtn=`<button class="btn btn-g" style="margin-bottom:8px" onclick="toggleDecline('${evId}',false)">Я всё же смогу прийти</button>`;
+    else myBtn=`<button class="btn btn-ghost" style="margin-bottom:8px" onclick="toggleDecline('${evId}',true)">Я не смогу прийти</button>`;
+  }
+
+  const memberRows=invitedMembers.map(m=>{
+    const declined=ev.declines.includes(m.uid);
+    const isC=m.uid===ev.createdBy;
+    let stIcon,stCls,stLabel;
+    if(isC){stIcon='★';stCls='ps-go';stLabel='Организатор';}
+    else if(declined){stIcon='✕';stCls='ps-no';stLabel='Не сможет';}
+    else{stIcon='✓';stCls='ps-go';stLabel='Идёт';}
+    return `<div class="crow s">
+      <div class="av" style="width:38px;height:38px;font-size:14px;background:${m.color||'#5C5CE8'}">${ini(m.name)}</div>
+      <div class="cm"><div class="ct">${esc(m.name)}</div><div class="cs">${stLabel}</div></div>
+      <div class="p-status ${stCls}" style="font-size:11px;font-weight:700">${stIcon}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('evd-body').innerHTML=`
+    <div class="sec" style="margin-top:12px"><div class="card">
+      ${ev.desc?`<div class="crow s" style="flex-direction:column;align-items:flex-start;gap:4px"><div style="font-size:12px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.4px">О мероприятии</div><div style="font-size:15px;color:var(--text);line-height:1.5">${esc(ev.desc)}</div></div>`:''}
+      <div class="crow s"><div class="cm"><div class="ct">Дата</div></div><span class="cv" style="font-size:14px;text-align:right">${dateStr}</span></div>
+      ${ev.time?`<div class="crow s"><div class="cm"><div class="ct">Время</div></div><span class="cv">${ev.time}</span></div>`:''}
+      ${ev.location?`<div class="crow s"><div class="cm"><div class="ct">Место</div></div><span class="cv">${esc(ev.location)}</span></div>`:''}
+    </div></div>
+    <div class="sec"><div class="sec-h">Участники</div><div class="card">${memberRows}</div></div>
+    ${myBtn?`<div style="height:16px"></div><div style="margin:0 16px">${myBtn}</div>`:''}
+    <div style="height:24px"></div>`;
+
+  openSheet('ov-event-detail');
+}
+
+function toggleDecline(evId,decline){
+  const evs=DB.events();const ev=evs.find(e=>e.id===evId);if(!ev)return;
+  if(decline){if(!ev.declines.includes(CU.id))ev.declines.push(CU.id);}
+  else{ev.declines=ev.declines.filter(id=>id!==CU.id);}
+  DB.setEvents(evs);
+  closeSheet('ov-event-detail');
+  renderCalendar();
+  toast(decline?'Вы отметили что не сможете прийти':'Вы снова в списке участников');
+}
+
+function deleteEvent(){
+  if(!curEvId)return;
+  DB.setEvents(DB.events().filter(e=>e.id!==curEvId));
+  closeSheet('ov-event-detail');renderCalendar();toast('Мероприятие удалено');
+}
+
+// ─── CHAT ───────────────────────────────────────────
+function renderChat(){
+  if(!CF)return;
+  document.getElementById('nav-cn').textContent=CF.name;
+  const msgs=DB.msgs().filter(m=>m.fid===CF.id);
+  const ct=document.getElementById('chat-msgs');
+  if(!msgs.length){ct.innerHTML=`<div class="empty" style="padding:40px 32px"><div class="empty-t">Пока тихо</div><div class="empty-s">Напишите первое сообщение</div></div>`;return;}
+  ct.innerHTML=msgs.map(m=>{
+    const mine=m.uid===CU.id;
+    const time=new Date(m.ts).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'});
+    if(m.type==='poll') return renderPollMsg(m,mine,time);
+    return `<div class="mwrap ${mine?'mine':''}">
+      ${!mine?`<div class="mname">${esc(m.uname)}</div>`:''}
+      <div class="minner">
+        ${!mine?`<div class="av" style="width:30px;height:30px;font-size:12px;background:${m.ucolor||'#5C5CE8'}">${ini(m.uname)}</div>`:''}
+        <div><div class="mbubble">${esc(m.text)}</div><div class="mtime">${time}</div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderPollMsg(m,mine,time){
+  const poll=m.poll;
+  const totalVotes=poll.options.reduce((s,o)=>s+o.votes.length,0);
+  const myVoteIdx=poll.options.findIndex(o=>o.votes.includes(CU.id));
+
+  const optsHtml=poll.options.map((o,i)=>{
+    const pct=totalVotes?Math.round(o.votes.length/totalVotes*100):0;
+    const isMy=myVoteIdx===i;
+    return `<button class="poll-opt${isMy?' voted':''}" onclick="vote('${m.id}',${i})">
+      <div class="poll-bar" style="width:${pct}%"></div>
+      <div class="poll-opt-text">
+        <span class="poll-opt-label">${esc(o.text)}${isMy?' ✓':''}</span>
+        <span class="poll-opt-pct">${pct}%</span>
+      </div>
+    </button>`;
+  }).join('');
+
+  return `<div class="mwrap ${mine?'mine':''}">
+    ${!mine?`<div class="mname">${esc(m.uname)}</div>`:''}
+    <div class="minner">
+      ${!mine?`<div class="av" style="width:30px;height:30px;font-size:12px;background:${m.ucolor||'#5C5CE8'}">${ini(m.uname)}</div>`:''}
+      <div>
+        <div class="poll-card">
+          <div class="poll-q">${esc(poll.question)}</div>
+          ${optsHtml}
+          <div class="poll-footer">${totalVotes} ${declVotes(totalVotes)}</div>
+        </div>
+        <div class="mtime">${time}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function vote(msgId,optIdx){
+  const msgs=DB.msgs();
+  const msg=msgs.find(m=>m.id===msgId);
+  if(!msg||msg.type!=='poll')return;
+  // Remove from all options
+  msg.poll.options.forEach(o=>{o.votes=o.votes.filter(v=>v!==CU.id);});
+  // Add to selected (toggle off if same)
+  const already=msg.poll.options[optIdx].votes.includes(CU.id);
+  if(!already) msg.poll.options[optIdx].votes.push(CU.id);
+  DB.setMsgs(msgs);
+  renderChat();
+}
+
+function declVotes(n){if(n%10===1&&n%100!==11)return'голос';if([2,3,4].includes(n%10)&&![12,13,14].includes(n%100))return'голоса';return'голосов';}
+
+function sendMsg(){
+  const inp=document.getElementById('chat-in');const text=inp.value.trim();
+  if(!text||!CF)return;
+  const msgs=DB.msgs();
+  msgs.push({id:uid(),fid:CF.id,uid:CU.id,uname:CU.name,ucolor:CU.color,text,ts:new Date().toISOString()});
+  DB.setMsgs(msgs);inp.value='';inp.style.height='auto';
+  renderChat();setTimeout(()=>{const c=document.getElementById('chat-msgs');c.scrollTop=c.scrollHeight;},10);
+}
+function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
+
+// ─── POLL CREATION ──────────────────────────────────
+function openCreatePoll(){
+  pollOptCount=2;
+  document.getElementById('poll-q').value='';
+  document.getElementById('poll-opts-group').innerHTML=
+    `<div class="irow"><input class="ifield L poll-opt-inp" type="text" placeholder="Вариант 1"></div>
+     <div class="irow"><input class="ifield L poll-opt-inp" type="text" placeholder="Вариант 2"></div>`;
+  openSheet('ov-poll');
+}
+function addPollOption(){
+  pollOptCount++;
+  const grp=document.getElementById('poll-opts-group');
+  const row=document.createElement('div');
+  row.className='irow';
+  row.style.cssText='gap:0;padding-right:8px';
+  row.innerHTML=`<input class="ifield L poll-opt-inp" type="text" placeholder="Вариант ${pollOptCount}" style="flex:1"><button onclick="this.closest('.irow').remove()" style="background:none;border:none;color:var(--red);font-size:22px;cursor:pointer;line-height:1;padding:0 4px;flex-shrink:0">×</button>`;
+  grp.appendChild(row);
+  row.querySelector('input').focus();
+}
+function submitPoll(){
+  const q=document.getElementById('poll-q').value.trim();
+  if(!q)return toast('Введите вопрос');
+  const opts=[...document.querySelectorAll('.poll-opt-inp')].map(i=>i.value.trim()).filter(Boolean);
+  if(opts.length<2)return toast('Нужно минимум 2 варианта');
+  const msgs=DB.msgs();
+  msgs.push({
+    id:uid(),fid:CF.id,uid:CU.id,uname:CU.name,ucolor:CU.color,
+    ts:new Date().toISOString(),type:'poll',text:'Голосование: '+q,
+    poll:{question:q,options:opts.map(t=>({text:t,votes:[]}))}
+  });
+  DB.setMsgs(msgs);
+  closeSheet('ov-poll');
+  switchTab('chat');
+  setTimeout(()=>{const c=document.getElementById('chat-msgs');c.scrollTop=c.scrollHeight;},80);
+  toast('Голосование создано');
+}
+
+// ─── FAMILY ─────────────────────────────────────────
+function renderFam(){
+  if(!CF)return;
+  document.getElementById('nav-fam').textContent=CF.name;
+  const isAdmin=CF.adminId===CU.id;
+  const tasks=DB.tasks().filter(t=>t.fid===CF.id&&t.status!=='archived');
+  const today=new Date();
+  const bdayMs=CF.members.map(m=>{
+    const u=DB.users().find(u=>u.id===m.uid);
+    if(!u||!u.birthday)return null;
+    const bd=new Date(u.birthday);
+    const next=new Date(today.getFullYear(),bd.getMonth(),bd.getDate());
+    if(next<today)next.setFullYear(today.getFullYear()+1);
+    const diff=Math.floor((next-today)/86400000);
+    return diff<=60?{name:m.name,diff,date:next,uid:m.uid}:null;
+  }).filter(Boolean).sort((a,b)=>a.diff-b.diff);
+
+  let bdayHtml='';
+  if(bdayMs.length){
+    bdayHtml=`<div class="sec"><div class="sec-h">Дни рождения</div><div class="card">
+      ${bdayMs.map(b=>`<div class="crow s">
+        <div class="av" style="width:36px;height:36px;font-size:14px;background:var(--orange)">${ini(b.name)}</div>
+        <div class="cm"><div class="ct">${esc(b.name)}</div><div class="cs">${b.date.toLocaleDateString('ru',{day:'numeric',month:'long'})}</div></div>
+        <span class="bday-tag">${b.diff===0?'Сегодня!':'Через '+b.diff+' дн.'}</span>
+      </div>`).join('')}
+    </div></div>`;
+  }
+
+  document.getElementById('fam-ct').innerHTML=`
+    <div class="sec"><div class="sec-h">Участники — ${CF.members.length}</div><div class="card">
+      ${CF.members.map(m=>{
+        const isMe=m.uid===CU.id,isMAdmin=m.uid===CF.adminId;
+        const mt=tasks.filter(t=>t.assignees.includes(m.uid)||t.createdBy===m.uid).length;
+        const u=DB.users().find(u=>u.id===m.uid);
+        const bday=u&&u.birthday?new Date(u.birthday).toLocaleDateString('ru',{day:'numeric',month:'long'}):'';
+        return `<div class="crow s">
+          <div class="av" style="width:42px;height:42px;font-size:16px;background:${m.color||'#5C5CE8'}">${ini(m.name)}</div>
+          <div class="cm"><div class="ct">${esc(m.name)}${isMe?` <span style="font-size:12px;color:var(--text3)">(Вы)</span>`:''}</div>
+            <div class="cs">${isMAdmin?'Администратор':'Участник'}${bday?' · ДР '+bday:''}${mt?' · '+mt+' задач':''}</div></div>
+          ${isAdmin&&!isMe?`<button onclick="removeMember('${m.uid}')" style="background:none;border:none;color:var(--red);font-size:13px;cursor:pointer;font-family:inherit;font-weight:500">Удалить</button>`:''}
+        </div>`;
+      }).join('')}
+    </div></div>
+    ${bdayHtml}
+    <div class="sec"><div class="sec-h">Управление</div><div class="card">
+      <div class="crow" onclick="showInvite()"><div class="cm"><div class="ct" style="color:var(--p)">Пригласить участника</div><div class="cs">Показать код приглашения</div></div><div class="chev"></div></div>
+      <div class="crow" onclick="openFamPicker()"><div class="cm"><div class="ct" style="color:var(--p)">Сменить или добавить семью</div></div><div class="chev"></div></div>
+    </div></div>
+    <div style="height:20px"></div>
+    <button class="btn btn-red" onclick="leaveFamily()">Покинуть семью</button>
+    <div style="height:20px"></div>`;
+}
+
+function showInvite(){document.getElementById('inv-code').textContent=CF.inviteCode;openSheet('ov-invite');}
+function copyCode(){navigator.clipboard.writeText(CF.inviteCode).then(()=>toast('Код скопирован!')).catch(()=>toast('Код: '+CF.inviteCode));}
+function removeMember(uid){
+  if(!confirm('Удалить участника?'))return;
+  const fams=DB.fams();const f=fams.find(f=>f.id===CF.id);
+  f.members=f.members.filter(m=>m.uid!==uid);DB.setFams(fams);CF=f;
+  renderFam();toast('Участник удалён');
+}
+function leaveFamily(){
+  if(CF.adminId===CU.id&&CF.members.length>1)return toast('Передайте роль администратора перед выходом');
+  const fams=DB.fams();const f=fams.find(f=>f.id===CF.id);
+  f.members=f.members.filter(m=>m.uid!==CU.id);
+  if(!f.members.length)DB.setFams(fams.filter(x=>x.id!==CF.id));else DB.setFams(fams);
+  CF=null;DB.setCurFid(null);goSetup();
+}
+
+// ─── PROFILE ────────────────────────────────────────
+function renderProf(){
+  if(!CU)return;
+  const myFams=DB.fams().filter(f=>f.members.some(m=>m.uid===CU.id));
+  const mt=DB.tasks().filter(t=>CF&&t.fid===CF.id&&(t.assignees.includes(CU.id)||t.createdBy===CU.id));
+  const done=mt.filter(t=>t.status==='verified').length;
+  const bday=CU.birthday?new Date(CU.birthday).toLocaleDateString('ru',{day:'numeric',month:'long',year:'numeric'}):'Не указан';
+  let bdayToday=false;
+  if(CU.birthday){const b=new Date(CU.birthday);const n=new Date();bdayToday=b.getDate()===n.getDate()&&b.getMonth()===n.getMonth();}
+  document.getElementById('prof-ct').innerHTML=`
+    <div style="padding:28px 0 16px;display:flex;flex-direction:column;align-items:center;gap:10px">
+      <div class="pav" style="width:82px;height:82px;font-size:30px;background:${CU.color}">${bdayToday?'🎂':ini(CU.name)}</div>
+      <div style="font-size:24px;font-weight:800;letter-spacing:-.5px;color:var(--text)">${esc(CU.name)}</div>
+      <div style="font-size:14px;color:var(--text2)">@${CU.login}</div>
+      ${bdayToday?`<div style="font-size:14px;color:var(--orange);font-weight:600">С днём рождения! 🎉</div>`:''}
+    </div>
+    <div class="sec" style="margin-top:0"><div class="sec-h">Личные данные</div><div class="card">
+      <div class="crow" onclick="openEditProf()"><div class="cm"><div class="ct">Имя</div></div><span class="cv">${esc(CU.name)}</span><div class="chev"></div></div>
+      <div class="crow" onclick="openEditProf()"><div class="cm"><div class="ct">Дата рождения</div></div><span class="cv">${bday}</span><div class="chev"></div></div>
+      <div class="crow s"><div class="cm"><div class="ct">Логин</div></div><span class="cv">@${CU.login}</span></div>
+    </div></div>
+    <div class="sec"><div class="sec-h">Статистика</div><div class="card">
+      <div class="crow s"><div class="cm"><div class="ct">Выполнено задач</div></div><span style="color:var(--green);font-weight:700;font-size:17px">${done}</span></div>
+      <div class="crow s"><div class="cm"><div class="ct">Активных задач</div></div><span class="cv">${mt.filter(t=>t.status==='assigned'||t.status==='open').length}</span></div>
+    </div></div>
+    <div class="sec"><div class="sec-h">Мои семьи</div><div class="card">
+      ${myFams.map(f=>`<div class="crow" onclick="pickFam('${f.id}');switchTab('tasks')">
+        <div class="av" style="width:36px;height:36px;font-size:14px;background:${f.color}">${ini(f.name)}</div>
+        <div class="cm"><div class="ct">${esc(f.name)}</div><div class="cs">${f.members.length} участников · ${f.adminId===CU.id?'Администратор':'Участник'}</div></div>
+        ${CF&&CF.id===f.id?`<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9l4 4 8-8" stroke="var(--p)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}
+      </div>`).join('')}
+      <div class="crow" onclick="goSetup()"><div class="cm"><div class="ct" style="color:var(--p)">Добавить семью</div></div><div class="chev"></div></div>
+    </div></div>
+    <div style="height:20px"></div>
+    <button class="btn btn-ghost" onclick="logoutUser()">Выйти из аккаунта</button>
+    <div style="height:20px"></div>`;
+}
+function openEditProf(){document.getElementById('ep-name').value=CU.name;document.getElementById('ep-bday').value=CU.birthday||'';openSheet('ov-edit-prof');}
+function saveProfile(){
+  const name=document.getElementById('ep-name').value.trim();
+  const bday=document.getElementById('ep-bday').value;
+  if(!name)return toast('Введите имя');
+  const users=DB.users();const u=users.find(u=>u.id===CU.id);
+  u.name=name;u.birthday=bday||null;DB.setUsers(users);CU=u;
+  const fams=DB.fams();fams.forEach(f=>{const m=f.members.find(m=>m.uid===CU.id);if(m)m.name=CU.name;});
+  DB.setFams(fams);if(CF)CF=fams.find(f=>f.id===CF.id);
+  closeSheet('ov-edit-prof');renderProf();toast('Профиль обновлён');
+}
+
+// ─── FAM PICKER ─────────────────────────────────────
+function openFamPicker(){
+  const mf=DB.fams().filter(f=>f.members.some(m=>m.uid===CU.id));
+  document.getElementById('fpick-list').innerHTML=mf.map(f=>`
+    <div class="crow" onclick="pickFamP('${f.id}')">
+      <div class="av" style="width:38px;height:38px;font-size:15px;background:${f.color}">${ini(f.name)}</div>
+      <div class="cm"><div class="ct">${esc(f.name)}</div><div class="cs">${f.members.length} участников</div></div>
+      ${CF&&CF.id===f.id?`<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9l4 4 8-8" stroke="var(--p)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}
+    </div>`).join('');
+  openSheet('ov-fpick');
+}
+function pickFamP(id){pickFam(id);closeSheet('ov-fpick');renderFam();renderProf();renderChat();}
+
+// ─── SHEETS & TOAST ─────────────────────────────────
+function openSheet(id){document.getElementById(id).classList.add('open');}
+function closeSheet(id){document.getElementById(id).classList.remove('open');}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2400);}
+
+// ─── UTILS ──────────────────────────────────────────
+function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36);}
+function rndCode(){return Math.random().toString(36).slice(2,8).toUpperCase();}
+function rndClr(){return COLORS[Math.floor(Math.random()*COLORS.length)];}
+function ini(n){return n.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+
+// Alias for profile avatar
+const pav=document.createElement;
+</script>
+
+
+</body></html>
